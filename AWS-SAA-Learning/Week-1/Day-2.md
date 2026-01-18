@@ -1,8 +1,8 @@
 ### Cloud Formation Basics
- Its a tool uses Template to create, update & delete infrastructure in AWS, in a consistent & repeatable way. Template either can be defined in YAML or JSON format.
- Resources has to be mentioned what are the resources are used. Template format version is not mandatory. Description: it is a free text, if template formate version is mentioned description must directly follow.
+ It's a tool uses Template to create, update & delete infrastructure in AWS, in a consistent & repeatable way. Template either can be defined in YAML or JSON format.
+ Resources has to be mentioned what are the resources are used. Template format version is not mandatory. Description: it is a free text, if template format version is mentioned description must directly follow.
 
- Below CFtemplate has been used to create a stack and launched a ec2 instance with session manager, Once everthing is created deleted the stack.
+ Below CFtemplate has been used to create a stack and launched a ec2 instance with session manager, Once everything is created deleted the stack.
 ``` 
  Parameters:
   LatestAmiId:
