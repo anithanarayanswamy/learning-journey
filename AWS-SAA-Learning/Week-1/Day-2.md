@@ -1,10 +1,13 @@
-### Cloud Formation Basics
- It's a tool uses Template to create, update & delete infrastructure in AWS, in a consistent & repeatable way. Template either can be defined in YAML or JSON format.
- Resources has to be mentioned what are the resources are used. Template format version is not mandatory. Description: it is a free text, if template format version is mentioned description must directly follow.
+### CloudFormation Basics
 
- Below CFtemplate has been used to create a stack and launched a ec2 instance with session manager, Once everything is created deleted the stack.
-``` 
- Parameters:
+CloudFormation is a tool that uses templates to create, update & delete infrastructure in AWS in a consistent & repeatable way. Templates can be defined in either YAML or JSON format.
+
+Resources must be mentioned to specify what resources are used. Template format version is not mandatory. Description: it is free text. If template format version is mentioned, description must directly follow.
+
+Below CloudFormation template has been used to create a stack and launch an EC2 instance with Session Manager. Once everything is created, delete the stack.
+
+```
+Parameters:
   LatestAmiId:
     Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
     Default: '/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64'
