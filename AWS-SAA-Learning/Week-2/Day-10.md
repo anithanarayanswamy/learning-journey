@@ -159,7 +159,7 @@ This design implements a **three-tier architecture** (Web, Application, Database
 
 ---
 
-## Key Exam Points 
+## Key Points 
 
 ### Subnet Fundamentals
 - ✅ Subnet must be in **one AZ only** (cannot span AZs)
@@ -210,7 +210,7 @@ This design implements a **three-tier architecture** (Web, Application, Database
 
 ---
 
-## Common Exam Scenarios
+## Common Scenarios
 
 ### Scenario 1: Subnet Overlap Error
 - **Problem**: Cannot create subnet due to CIDR overlap
