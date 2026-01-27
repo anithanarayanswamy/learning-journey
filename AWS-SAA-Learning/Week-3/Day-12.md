@@ -94,8 +94,4 @@
   - **Interface endpoints (PrivateLink)**: many other services
 - **IPv6**: No NAT; use **Egress-only IGW** for outbound-only IPv6.
 
-## EC2 architecture quick notes
-
-- **EC2 instances are virtual machines** running on physical **EC2 hosts**.
-- **Hosts live in a single AZ**; if the underlying host or AZ has an issue, the instance can be impacted.
 
