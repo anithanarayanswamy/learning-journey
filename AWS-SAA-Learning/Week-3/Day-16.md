@@ -1,4 +1,4 @@
-# Day 16 – CFN-INIT, CFN-SIGNAL, Instance Roles, ECR, Bootstrapping, Placement Groups & More – SAA-C03
+# Day 16 – CFN-INIT, CFN-SIGNAL, Instance Roles, ECR, Bootstrapping, Placement Groups, Route 53 & More – SAA-C03
 
 ## CFN-INIT and CFN-SIGNAL
 
@@ -257,6 +257,199 @@ Placement groups influence **where** EC2 instances are placed relative to each o
 
 ---
 
+## Route 53 (R53) – Hosted Zones and DNS
+
+Route 53 acts as both a **domain registrar** (like buying land) and a **domain hosting** service (building a house on that land). You can use one, the other, or both for a website.
+
+### Domain Registrar (Buying the Name)
+
+This service handles the **official ownership and registration** of your chosen domain name (e.g. `example.com`) with the global internet governing body (**ICANN**). You pay a **registration fee** to secure the name. Route 53 communicates with the **Top-Level Domain (TLD) registry** (e.g. the .com registry) to register your domain.
+
+### Domain Hosting (Directing Traffic)
+
+This service manages **how users are directed** to your website’s location on the internet using the **Domain Name System (DNS)**. When a user types your domain name into a browser, Route 53 **translates the name into a numeric IP address** that computers use to connect. It automatically allocates **four Name Servers (NS)** and creates a **zone file** (a list of instructions or records) that tells the internet where to send traffic for your domain. The registrar function updates the **global NS records** to point to these specific AWS name servers, making Route 53 the **authoritative source** for your domain’s traffic rules.
+
+**Summary**: Route 53 is a **highly available and scalable DNS web service** that ensures fast and reliable connections between end-users and your applications hosted on AWS or elsewhere on the internet.
+
+### Using Route 53 for DNS Hosting Only
+
+You can use **Amazon Route 53 for DNS hosting only**, even if your domain name is registered with a different provider (e.g. GoDaddy, Namecheap).
+
+**How to use Route 53 for DNS hosting only:**
+
+1. **Create a Hosted Zone in AWS**: In the Route 53 console, create a **public hosted zone** for your domain name. This acts as the container for all your DNS records (A, CNAME, MX, etc.).
+2. **Get AWS Name Servers**: After creating the hosted zone, AWS provides **four unique name servers (NS records)** that are globally distributed for high availability and low latency.
+3. **Update at Your Registrar**: Log into your current domain registrar’s control panel and **replace their default name servers** with the four AWS name servers from your Route 53 hosted zone.
+4. **Propagation**: Once updated, DNS changes propagate across the internet (can take **up to 48 hours**). Route 53 then becomes the **authoritative DNS service** for your domain.
+
+---
+
+### What is a Hosted Zone?
+
+A **hosted zone** is a **DNS database (zone file)** for a domain. It holds the DNS records (e.g. **A, AAAA, MX, NS, TXT**) that tell resolvers how to answer queries for that domain. Route 53 hosted zones are **authoritative** for the domain: when someone asks for `www.example.com`, the nameservers for that zone are the source of truth. Route 53 zones are **globally resilient** (replicated across many DNS servers). You can create a hosted zone when you register a domain with Route 53 or **separately** and point a domain registered elsewhere to Route 53’s nameservers.
+
+**Important exam points (Hosted zones)**
+
+- Hosted zone = DNS database for a domain; stores A, AAAA, MX, NS, TXT, etc.
+- Route 53 hosted zones are **authoritative** and **globally resilient**.
+- Can be created with domain registration or independently (e.g. domain registered with another registrar).
+
+---
+
+### Public Hosted Zones
+
+A **public hosted zone** is hosted on Route 53’s **public name servers** and is resolvable from the **public internet** (and from VPCs that can reach the internet). Each zone gets **4 NS (nameserver) records** that you configure at your domain registrar so the world uses Route 53 for that domain. Domains registered **anywhere** (Route 53 or another registrar) can use Route 53 by updating the registrar’s NS records to point to Route 53.
+
+**Use case**: Public websites, internet-facing APIs, and any service that must be reachable by the public.
+
+**Important exam points (Public hosted zones)**
+
+- Resolvable from the **public internet** (and from VPCs).
+- **4 NS records** per zone; domain can be registered with any registrar.
+- Use for **public websites and internet-facing services**.
+
+---
+
+### Private Hosted Zones
+
+A **private hosted zone** is associated with **one or more VPCs** and is **only resolvable inside those VPCs**. It is **not** published on the public internet. Resources in the VPC (e.g. EC2, Lambda in a VPC) can resolve names in the private zone; useful for internal hostnames like `db.internal.example.com` or `api.private.example.com`. **Cross-account** association (e.g. private zone in account A, VPC in account B) is possible via CLI/API.
+
+**Use case**: Internal apps, databases, microservices, and any DNS that should only be visible inside your VPCs.
+
+**Important exam points (Private hosted zones)**
+
+- **Only resolvable inside** the VPCs you associate; not on the public internet.
+- Can be associated with **one or more VPCs**; **cross-account** association supported (CLI/API).
+- Use for **internal apps, databases, microservices**.
+
+---
+
+### Split-View DNS (Public + Private)
+
+**Split-view DNS** means using the **same domain name** in both a **public** and a **private** hosted zone. The **answer depends on who is asking**: queries from the **internet** get the **public** records (e.g. website, public API); queries from **inside the VPC** get the **private** records (e.g. internal API or database). This lets you use one domain (e.g. `api.example.com`) for both external users (public endpoint) and internal services (private endpoint) without exposing internal IPs or hostnames publicly.
+
+**Use case**: Internal vs external endpoints, keeping sensitive internal services only in the private zone.
+
+**Important exam points (Split-view DNS)**
+
+- **Same domain** in public and private zones; **response depends on query source** (internet vs VPC).
+- Use when you need **different answers** for internal vs external clients (e.g. internal vs external API).
+
+---
+
+### CNAME vs ALIAS
+
+**CNAME** maps a **name to another name** (e.g. `www.example.com` → `example.com`). In standard DNS, **CNAME is not allowed at the zone apex** (root domain, e.g. `example.com`), because the apex must have SOA and NS records. Many AWS resources (e.g. CloudFront, load balancers, S3 website) give you a **DNS name**, not an IP; if you could only use CNAME, you could not point the apex to them.
+
+**ALIAS** is an **AWS-specific** record type that maps a **name to an AWS resource** (by name or ARN). It **works at the apex and on subdomains**, does not incur an extra lookup (Route 53 resolves the target), and there is **no extra charge** when the target is an AWS resource. It behaves like a CNAME for AWS targets but without the apex limitation.
+
+**Common ALIAS targets**: Elastic Load Balancing (ALB/NLB/CLB), **CloudFront**, **API Gateway**, **S3** (website endpoint), **Global Accelerator**, and other AWS resources that expose a DNS name.
+
+**Important exam points (CNAME vs ALIAS)**
+
+- **CNAME**: name → name; **not allowed at zone apex**; standard DNS.
+- **ALIAS**: name → AWS resource; **works at apex and subdomains**; AWS-only; **prefer for AWS services** (ELB, CloudFront, API Gateway, S3, Global Accelerator).
+- “Point apex to CloudFront/ALB/S3” → **ALIAS**, not CNAME.
+
+---
+
+### Route 53 Health Checks
+
+Health checks are **separate objects** in Route 53 that you **attach to records**. They are evaluated from **multiple global locations** (not just one region), so you get a global view of endpoint health. **Default check interval** is **30 seconds**; **10-second** checks are available at extra cost.
+
+**Types**: **TCP**, **HTTP/HTTPS**, **HTTP/HTTPS with string matching** (e.g. search for “OK” in the body), **CloudWatch alarm–based** (e.g. CPU > 90%), and **calculated** health checks (combine multiple checks with AND/OR). Results are **Healthy** or **Unhealthy**; unhealthy records can be excluded from responses when using failover or multi-value routing.
+
+**Use case**: **Failover** (primary/secondary) and **smart routing** (e.g. only return healthy endpoints).
+
+**Important exam points (Health checks)**
+
+- **Separate** from the record; checked from **global** locations.
+- Default **30 s**; **10 s** costs extra.
+- Types: TCP, HTTP/HTTPS, string match, **CloudWatch alarm**, **calculated** (check of checks).
+- Used for **failover** and **smart routing** (only return healthy targets).
+
+---
+
+### Routing Policies
+
+#### Simple Routing
+
+**Simple** is the default: one record (or multiple records with the same name and type) returns **one value** (or one chosen at random if there are multiple). There is **no** health check–based failover, **no** weighting, and **no** latency or geography logic. Use when you have a single resource or basic DNS with no failover.
+
+**Important exam point**: “Just point to a resource” with no failover or routing logic → **Simple**.
+
+---
+
+#### Multi-Value Routing
+
+Route 53 returns **up to 8 healthy records** (if you have more, 8 are chosen at random among healthy ones). The **client** picks one (e.g. one IP). Each record can have its own **health check**. This **improves availability** (if one target is unhealthy, others can still be returned) but it is **not a load balancer**—Route 53 does not balance connections or sessions; it only returns a set of healthy answers.
+
+**Important exam point**: Need **multiple healthy answers** with health checks but **not** LB behavior → **Multi-value**. Not a substitute for ALB/NLB.
+
+---
+
+#### Weighted Routing
+
+Traffic is **split by weight** (e.g. 40 / 40 / 20 → 40%, 40%, 20%). **Weight 0** means “never return this record” (unless **all** records have weight 0, in which case all are returned). Unhealthy records are not returned; Route 53 can retry. Use for **canary releases**, **A/B testing**, or gradual shift (e.g. 10% to new region, 90% to old).
+
+**Important exam points (Weighted)**
+
+- **Weight** = percentage of traffic (e.g. 40/40/20).
+- **Weight 0** = not returned (unless every record is 0).
+- Use for **canary**, **A/B testing**, **gradual migration**.
+
+---
+
+#### Latency-Based Routing
+
+Route 53 sends the user to the **region with the lowest latency** from the user’s location, based on **AWS latency data**. Each record must be **associated with a region** (e.g. us-east-1, eu-west-1). Only **healthy** records (if health checks are configured) are considered. Use for **global apps** where you want the user to hit the “closest” region for performance.
+
+**Important exam points (Latency-based)**
+
+- Routes to **lowest latency region**; records must be **region-tagged**.
+- Use for **performance** and **global apps**; health checks apply.
+
+---
+
+#### Geolocation Routing (quick reminder)
+
+Based on **user country/location**. Use for **compliance** and **localization** (e.g. serve content from the right region or restrict by geography).
+
+**Important exam points (Geolocation)**
+
+- Routes by **user country/continent** (where the DNS query originates).
+- Use for **compliance**, **localization**, country-specific content.
+
+---
+
+#### Geoproximity Routing
+
+Traffic is routed based on **user location** and **resource location** (geographic proximity). You can set a **bias** value: **positive bias** pulls more traffic toward that resource; **negative bias** pushes traffic away. This requires **Traffic Flow** (Route 53’s visual editor for complex routing). Use for **gradual region migration**, **shifting traffic by geography**, or fine-tuning which region gets more traffic.
+
+**Important exam points (Geoproximity)**
+
+- Routes by **geographic proximity**; **bias** shifts traffic toward or away from a resource.
+- Requires **Traffic Flow**.
+- Use for **region migration**, **geographic load distribution**.
+
+---
+
+### Route 53 – Quick Reference
+
+| Policy / feature | Brief use |
+|------------------|-----------|
+| **Simple** | Single resource; no failover or routing logic. |
+| **Multi-value** | Up to 8 healthy answers; health checks; not a load balancer. |
+| **Weighted** | Split traffic by weight; canary, A/B, migration. |
+| **Latency-based** | Send user to lowest-latency region; region-tagged records. |
+| **Geolocation** | By user country/location; compliance & localization. |
+| **Geoproximity** | Route by location + bias; requires Traffic Flow. |
+| **Failover** | Primary/secondary (active–passive); use with health checks. |
+| **ALIAS** | Point name to AWS resource; works at apex; use for ELB, CloudFront, S3, etc. |
+| **Health checks** | Global; 30 s default, 10 s extra; used for failover and smart routing. |
+
+---
+
 ## Quick Exam Checklist – Day 16
 
 | Topic | Key point |
@@ -274,3 +467,14 @@ Placement groups influence **where** EC2 instances are placed relative to each o
 | **Partition placement** | 7 partitions per AZ; HDFS, Cassandra, etc.; limit failure impact. |
 | **Dedicated Hosts** | Pay for host; no RHEL/SUSE/Windows; no RDS; no placement groups; can share via RAM. |
 | **Enhanced networking** | SR-IOV; no charge; higher PPS, lower latency. |
+| **R53 Public zone** | 4 NS records; resolvable from internet; public websites. |
+| **R53 Private zone** | Only inside associated VPC(s); cross-account possible; internal services. |
+| **Split-view DNS** | Same domain; public vs private zone; answer by query source. |
+| **ALIAS vs CNAME** | ALIAS at apex for AWS resources (ELB, CloudFront, S3, etc.); CNAME not at apex. |
+| **R53 Health checks** | Global; 30 s default; TCP/HTTP/CloudWatch/calculated; for failover. |
+| **R53 Simple** | One value or random; no health check failover. |
+| **R53 Multi-value** | Up to 8 healthy; not a load balancer. |
+| **R53 Weighted** | Split by weight; weight 0 = not returned; canary/A/B. |
+| **R53 Latency-based** | Lowest latency region; region-tagged records. |
+| **R53 Geolocation** | User country/location; compliance & localization. |
+| **R53 Geoproximity** | Location + bias; requires Traffic Flow. |
