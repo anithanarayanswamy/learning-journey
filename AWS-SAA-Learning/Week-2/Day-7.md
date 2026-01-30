@@ -128,3 +128,31 @@ Demo lesson for S3 static page
 - MFA is required to delete object versions
 - Serial number (MFA) + code must be passed with API calls
 
+---
+
+## Quick Exam Checklist – Day 7 (SAA-C03)
+
+| Topic | Key point |
+|-------|-----------|
+| **CloudWatch Logs** | Store/monitor logs; regional; metric filters; AWS and on-prem. |
+| **CloudTrail** | API activity; 90-day event history by default; trails to S3/CloudWatch; management + data events. |
+| **CloudTrail** | Data events not enabled by default; global services (IAM, STS, CloudFront) log to us-east-1. |
+| **Control Tower** | Multi-account landing zone; Organizations + Config + SSO; guardrails (preventive/detective). |
+| **Landing Zone** | Log Archive + Audit accounts; Security OU; IAM Identity Center. |
+| **Guardrails** | Preventive (SCPs) vs Detective (Config rules); mandatory / strongly recommended / elective. |
+| **Account Factory** | Automated account provisioning; guardrails auto-applied. |
+| **S3** | Private by default; bucket policies = resource policies. |
+| **Bucket vs Identity policy** | Bucket policy: cross-account, anonymous; Identity: same-account, prefer IAM. |
+| **Static website** | HTTP access; index/error doc; website endpoint; bucket policy for public read. |
+| **Versioning** | Disabled → Enabled → Suspend (cannot fully disable); MFA Delete optional. |
+
+---
+
+## Important Exam Points – Day 7
+
+- **CloudTrail**: 90 days in event history; **trails** for long-term (S3/CloudWatch); **data events** off by default; global services → us-east-1.
+- **Control Tower** = landing zone + guardrails; **preventive** = SCPs; **detective** = Config rules.
+- **S3 bucket policy** = resource policy; good for **anonymous** or **cross-account**; identity policy for same-account.
+- **Versioning**: Once enabled, can only **suspend**; MFA Delete protects version deletion.
+- **ACLs**: Avoid unless required; prefer bucket/identity policies.
+

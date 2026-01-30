@@ -227,3 +227,30 @@ This design implements a **three-tier architecture** (Web, Application, Database
 ### Scenario 4: High Availability Setup
 - **Problem**: Application must survive AZ failure
 - **Solution**: Deploy across multiple AZs with load balancer
+
+---
+
+## Quick Exam Checklist – Day 10 (SAA-C03)
+
+| Topic | Key point |
+|-------|-----------|
+| **Subnet** | One AZ only; CIDR subset of VPC; cannot overlap; 5 IPs reserved. |
+| **Public subnet** | Route 0.0.0.0/0 → IGW; auto-assign public IP optional. |
+| **Private subnet** | No route to IGW; use NAT Gateway for outbound. |
+| **Route table** | One per subnet (one table can have many subnets); main = default. |
+| **NACL** | Stateless; subnet-level; allow inbound + outbound explicitly. |
+| **Security Group** | Stateful; instance-level; allow only; SG as source = scalable. |
+| **IPv6** | Publicly routable; egress-only IGW for outbound-only; no NAT. |
+| **Multi-AZ** | Deploy across ≥2 AZs; cross-AZ transfer charged. |
+| **VPC Endpoints** | Private AWS access without NAT/internet. |
+
+---
+
+## Important Exam Points – Day 10
+
+- **Subnet** = **one AZ only**; CIDR must be **subset of VPC**; subnets **cannot overlap**; **5 IPs reserved** per subnet.
+- **Public subnet** = route **0.0.0.0/0 → IGW**; **private** = no IGW route (use NAT for outbound).
+- **NACL**: **Stateless** (allow both directions); **Security Group**: **stateful** (return traffic auto-allowed).
+- **SG as source** = "any instance with that SG"; **self-reference** = same SG (scales with ASG).
+- **IPv6**: No NAT; use **egress-only internet gateway** for private IPv6 outbound-only.
+- **Cross-AZ data transfer** is charged; same-AZ free; use VPC endpoints to avoid NAT for AWS APIs.

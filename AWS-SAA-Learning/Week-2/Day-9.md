@@ -167,3 +167,30 @@ AWS reserves the following for each subnet:
 
 
 - Always remember: **first 4 and last IP are reserved**.
+
+---
+
+## Quick Exam Checklist – Day 9 (SAA-C03)
+
+| Topic | Key point |
+|-------|-----------|
+| **S3 Client-side encryption** | Encrypt before upload; AWS never sees plaintext; full key control. |
+| **SSE** | Server-side; S3 encrypts/decrypts; default encryption on new buckets = SSE-S3. |
+| **SSE types** | SSE-S3 (default), SSE-KMS, DSSE-KMS, SSE-C (customer keys). |
+| **STS** | Short-lived credentials; used by roles, federation, cross-account; global. |
+| **GuardDuty** | Threat detection; CloudTrail, VPC Flow, DNS; managed; minimal maintenance. |
+| **VPC CIDR** | /28 (min) to /16 (max); subnets = subset of VPC; no overlap. |
+| **Reserved IPs** | First 4 (network, router, DNS, future) + last (broadcast) per subnet. |
+| **DNS in VPC** | enableDnsHostnames, enableDnsSupport; VPC base + 2 = DNS. |
+| **Subnets** | One AZ per subnet; subset of VPC CIDR; cannot overlap. |
+
+---
+
+## Important Exam Points – Day 9
+
+- **Client-side encryption** = you control keys; AWS never decrypts; **SSE** = S3 manages encryption at rest.
+- **Default encryption**: All **new S3 buckets** encrypted at rest (SSE-S3 default).
+- **STS** = temporary credentials; **IAM roles use STS** internally; regional endpoints reduce latency.
+- **GuardDuty** = managed threat detection; uses CloudTrail, VPC Flow Logs, DNS; no agent.
+- **VPC**: **/28 to /16**; **first 4 + last IP** reserved per subnet (router at +1, DNS at +2).
+- **Subnets** cannot span AZs; must be subset of VPC CIDR; subnets cannot overlap.

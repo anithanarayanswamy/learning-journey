@@ -94,4 +94,32 @@
   - **Interface endpoints (PrivateLink)**: many other services
 - **IPv6**: No NAT; use **Egress-only IGW** for outbound-only IPv6.
 
+---
+
+## Quick Exam Checklist – Day 12 (SAA-C03)
+
+| Topic | Key point |
+|-------|-----------|
+| **NACL** | Subnet-level; stateless (allow inbound + outbound); explicit allow/deny; IP/port/protocol. |
+| **Security Group** | ENI-level; stateful; allow only; SG as source = scalable; self-reference for clusters. |
+| **NAT** | Private → internet; source NAT; NATGW in public subnet. |
+| **NAT Gateway** | Public subnet; Elastic IP; AZ-resilient; no SG; no port forward; no bastion; no IPv6. |
+| **Private subnet route** | 0.0.0.0/0 → NAT Gateway; public subnet (NATGW) → 0.0.0.0/0 → IGW. |
+| **HA NAT** | One NATGW per AZ; private subnets point to NATGW in same AZ. |
+| **NAT Instance** | EC2; disable source/dest check; SG supported; can do port forward/bastion. |
+| **VPC Endpoints** | Gateway (S3, DynamoDB); Interface (PrivateLink) for other services. |
+| **IPv6** | No NAT; ::/0 → IGW (bidirectional) or Egress-only IGW (outbound only). |
+
+---
+
+## Important Exam Points – Day 12
+
+- **NACL** = **stateless** (allow both directions); **Security Group** = **stateful** (return traffic auto-allowed).
+- **NAT Gateway**: In **public subnet**; **no Security Groups**; **no port forwarding**; **not a bastion**; **no IPv6**.
+- **Private subnet outbound**: Route **0.0.0.0/0 → NAT Gateway**; NATGW's subnet needs **0.0.0.0/0 → IGW**.
+- **HA**: Use **one NATGW per AZ**; point each AZ's private subnets to **NATGW in same AZ** (avoid cross-AZ cost).
+- **NAT Instance**: Disable **Source/Destination Check**; in public subnet; route private → NAT instance.
+- **VPC Endpoints**: **Gateway** (S3, DynamoDB, free); **Interface** (PrivateLink, many services, per AZ).
+- **IPv6**: Use **Egress-only Internet Gateway** for outbound-only IPv6 (no NAT).
+
 

@@ -659,6 +659,36 @@ aws s3control create-access-point \
 * **Team-based access** - Different access points for different teams with appropriate permissions
 * **Data lake access** - Different access points for different analytics workloads
 
+---
+
+## Quick Exam Checklist – Day 8 (SAA-C03)
+
+| Topic | Key point |
+|-------|-----------|
+| **KMS** | Regional; keys never leave KMS; symmetric/asymmetric; FIPS 140-2 L2; max 4KB per key op. |
+| **DEK** | GenerateDataKey for >4KB; encrypt with plaintext key; store ciphertext key with data. |
+| **Key policy** | Every key has one; key policy + IAM; aliases for key IDs. |
+| **S3 Storage Classes** | Standard (frequent, important); Standard-IA (infrequent, 30d min); One Zone-IA (replaceable, 1 AZ); Glacier Instant (quarterly); Flexible (1–2/yr); Deep Archive (yearly); Intelligent-Tiering (unknown pattern). |
+| **Lifecycle** | Transition (move class by age); Expiration (delete); versioning helps. |
+| **Replication** | Versioning ON both sides; not retroactive; CRR vs SRR; SSE-C cannot replicate. |
+| **S3 RTC** | 99.99% within 15 min SLA; CloudWatch metrics. |
+| **PreSigned URL** | Temporary access; permissions of generator; don't use with role (expiry). |
+| **S3 Select / Glacier Select** | SQL-like server-side filter; less transfer. |
+| **Event Notifications** | SNS, SQS, Lambda; Created, Delete, Restore, Replication. |
+| **Object Lock** | WORM; new buckets only; versioning required; Retention (COMPLIANCE/GOVERNANCE) + Legal Hold. |
+| **Access Points** | Per-bucket multiple endpoints; different policies/network controls. |
+
+---
+
+## Important Exam Points – Day 8
+
+- **KMS**: Keys **never leave** KMS; **4KB limit** per Encrypt/Decrypt; use **GenerateDataKey** for large data.
+- **S3 Standard** = frequent, important; **Standard-IA** = infrequent + retrieval fee + 30d/128KB min; **One Zone-IA** = replaceable, 1 AZ.
+- **Replication**: **Versioning required** on source and destination; **not retroactive** (batch replicate for existing).
+- **Object Lock**: **New buckets only**; **COMPLIANCE** = no bypass; **GOVERNANCE** = bypass with s3:BypassGovernanceRetention.
+- **PreSigned URL**: Don't generate with **role** (temp creds expire); use IAM user or long-term creds for longer expiry (up to 7 days).
+- **S3 Access Points**: One bucket, many endpoints; different policies and network (e.g. VPC-only) per access point.
+
 ### Benefits
 
 * **Granular access control** - Fine-grained permissions per access point

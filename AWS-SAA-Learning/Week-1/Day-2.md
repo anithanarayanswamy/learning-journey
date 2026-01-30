@@ -82,3 +82,26 @@ Outputs:
       - EC2Instance
       - PublicIp
 ```
+
+---
+
+## Quick Exam Checklist – Day 2 (SAA-C03)
+
+| Topic | Key point |
+|-------|-----------|
+| **CloudFormation** | IaC; YAML or JSON templates; creates/updates/deletes stacks. |
+| **Template sections** | Parameters, Resources (required), Outputs; Description, Metadata optional. |
+| **Resources** | Must declare all resources; use intrinsic functions (!Ref, !GetAtt). |
+| **Parameters** | SSM Parameter types (e.g. AWS::SSM::Parameter::Value\<AWS::EC2::Image::Id\>); constraints. |
+| **Outputs** | Expose values (e.g. InstanceId, PublicIP) after stack creation. |
+| **IAM in CFN** | Roles, Instance Profiles; trust policy for ec2.amazonaws.com. |
+
+---
+
+## Important Exam Points – Day 2
+
+- **CloudFormation** = Infrastructure as Code; **Resources** section is mandatory.
+- **!Ref** returns the value (e.g. parameter value, resource ID); **!GetAtt** returns attributes (e.g. AvailabilityZone, PublicIp).
+- Use **SSM Parameter for latest AMI** to avoid hardcoding AMI IDs (e.g. /aws/service/ami-amazon-linux-latest/...).
+- **Instance Profile** links an IAM role to EC2; required for instance to assume the role (e.g. SSM ManagedInstanceCore).
+- Stack **rollback** on failure; understand **dependent resources** and **creation order**.

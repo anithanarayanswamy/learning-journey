@@ -311,6 +311,30 @@ At the end of this demo, you have:
 
 ---
 
+## Quick Exam Checklist – Day 11 (SAA-C03)
+
+| Topic | Key point |
+|-------|-----------|
+| **VPC Router** | At network+1; HA; route tables control routing. |
+| **Route table** | One subnet = one route table; local route automatic; longest prefix match. |
+| **IGW** | 1 VPC = 0 or 1 IGW; must attach; public IP not in OS (IGW does NAT). |
+| **Public subnet** | Route 0.0.0.0/0 → igw; auto-assign public IPv4 optional. |
+| **Bastion host** | EC2 in public subnet; secure entry to private resources; restrictive SG; consider Session Manager. |
+| **Private + internet** | NAT Gateway in public subnet; private route 0.0.0.0/0 → nat. |
+
+---
+
+## Important Exam Points – Day 11
+
+- **VPC router** at **network+1** (e.g. 10.16.48.1 for 10.16.48.0/20); **highly available**; controlled by **route tables**.
+- **IGW**: **1 VPC = 0 or 1 IGW**; must **attach** to VPC; **public IP not configured in OS**—IGW does NAT at gateway.
+- **Route to IGW** (0.0.0.0/0 → igw) makes subnet **public**; auto-assign public IPv4 is **subnet-level**.
+- **Bastion** = EC2 in **public subnet**; only way in for many designs; use **Session Manager** to avoid public IP.
+- **Private subnet outbound**: Use **NAT Gateway** (not IGW); route 0.0.0.0/0 → nat-xxx; NAT in **public** subnet.
+- **Longest prefix match** determines which route is used; **main route table** = default for new subnets.
+
+---
+
 ## Best Practices
 
 1. **Route Table Organization**:

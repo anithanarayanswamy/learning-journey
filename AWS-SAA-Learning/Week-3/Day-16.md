@@ -478,3 +478,16 @@ Traffic is routed based on **user location** and **resource location** (geograph
 | **R53 Latency-based** | Lowest latency region; region-tagged records. |
 | **R53 Geolocation** | User country/location; compliance & localization. |
 | **R53 Geoproximity** | Location + bias; requires Traffic Flow. |
+
+---
+
+## Important Exam Points – Day 16 (SAA-C03)
+
+- **cfn-init** = **desired state** (Packages, Files, Commands, Services); **User Data** = procedural; use **Metadata → AWS::CloudFormation::Init**.
+- **cfn-signal** + **Creation policy** = stack waits until instance signals; **timeout** = failure; run cfn-signal **from inside instance**.
+- **Instance roles** = temporary creds via **169.254.169.254**; **auto-rotated**; **never** embed access keys on instances.
+- **ECS vs Fargate**: No servers / batch / burst → **Fargate**; large cost-optimized → **ECS on EC2**.
+- **ECR**: IAM, scanning, replication (cross-Region, cross-account); public = read-only anonymous; private = IAM.
+- **Parameter Store**: Config/secrets; **hierarchical** paths; parameter **changes** can trigger **EventBridge**.
+- **Placement**: **Cluster** = one AZ, low latency; **Spread** = 7 per AZ, one per rack; **Partition** = 7 per AZ, HDFS/Cassandra; **Dedicated Host** = no placement groups, pay per host.
+- **Route 53**: **ALIAS** at apex for AWS resources (ELB, CloudFront, S3); **CNAME** not at apex; **health checks** 30 s default; **Simple** = one value; **Weighted** = split by weight; **Latency** = lowest-latency region; **Geolocation** = by country; **Geoproximity** = Traffic Flow + bias.

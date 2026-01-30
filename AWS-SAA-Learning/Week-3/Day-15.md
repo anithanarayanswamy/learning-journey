@@ -121,3 +121,27 @@ Bootstrapping is the process of **automatically configuring an EC2 instance at l
   - **Use User Data to install software, pull configs from S3, join clusters, register with services, etc., during first startup.**
   - **If an exam question mentions “automatically install and configure software on EC2 at launch” → think User Data (bootstrapping).**
 
+---
+
+## Quick Exam Checklist – Day 15 (SAA-C03)
+
+| Topic | Key point |
+|-------|-----------|
+| **ECS on EC2** | You manage instances; good for large, steady, cost-optimized; pay for EC2 24/7. |
+| **Fargate** | No servers; pay per vCPU/memory per second; batch, spiky, minimal ops. |
+| **ECS vs Fargate** | No servers / batch / burst → Fargate; large cost-optimized → ECS on EC2. |
+| **ECR** | Private/public registry; IAM; image scanning; replication (cross-Region, cross-account). |
+| **ECR Public** | Read without auth; write needs IAM. |
+| **User Data** | Run by OS at first boot only; 169.254.169.254/latest/user-data; bootstrapping. |
+
+---
+
+## Important Exam Points – Day 15
+
+- **"No servers to manage"** or **"no EC2 to manage"** → **Fargate**.
+- **"Lowest cost for large steady container workload"** → **ECS on EC2** (good utilization, RIs/Savings Plans).
+- **Spiky, batch, periodic** → **Fargate** (pay per task, per second).
+- **ECR**: **Private** = IAM for push/pull; **Public** = read anonymous, write IAM; **replication** for multi-region/account; **scanning** for vulnerabilities.
+- **User Data**: **Executed by OS**, not EC2 service; **first boot only** (by default); use for install, pull config, register.
+- **Bootstrapping** = User Data and/or cfn-init; "automatically configure at launch" → User Data.
+

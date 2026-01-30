@@ -100,3 +100,31 @@ Using Organizations, you can create accounts and allocate resources, group accou
 - Add group accounts
 - Apply policies to accounts
 - Enable AWS services
+
+---
+
+## Quick Exam Checklist – Day 3–5 (SAA-C03)
+
+| Topic | Key point |
+|-------|-----------|
+| **CloudWatch** | Metrics, Logs, Events (now EventBridge); regional; operational data. |
+| **HA / Fault Tolerance / DR** | HA = minimize outage; FT = operate through faults; DR = when both fail. |
+| **Route 53** | DNS; register domains; global; single database; globally resilient. |
+| **IAM** | Policies = JSON; Effect, Action, Resource; Explicit DENY > ALLOW > implicit DENY. |
+| **Managed policies** | Reusable; attach to users/groups/roles; for management overhead. |
+| **IAM Users** | Long-term identity; 5000 per account; 10 groups per user. |
+| **IAM Groups** | Containers for users; no credentials; 300 groups soft limit; no nested groups. |
+| **IAM Roles** | Temporary identity; trust policy + permission policy; federation; service-linked roles. |
+| **ARN** | arn:partition:service:region:account-id:resource-id. |
+| **Organizations** | Multi-account; OUs; SCPs; consolidated billing. |
+
+---
+
+## Important Exam Points – Day 3–5
+
+- **IAM**: First priority = **Explicit DENY**; second = **Explicit ALLOW**; third = **implicit DENY**.
+- **Roles** = temporary credentials; used by services, cross-account, federation; no long-term keys.
+- **Service-linked roles** = created/managed by AWS service; cannot delete until service releases.
+- **Route 53** = global; one set of nameservers; use for domain registration and DNS.
+- **CloudWatch** = metrics (CPU, custom), logs, events; regional.
+- **Organizations** = manage multiple accounts; SCPs set permission boundaries (Day 6).

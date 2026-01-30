@@ -190,3 +190,32 @@ Security notes:
 - The **public DNS name resolves to the private IP inside the VPC**, and to the public IP from the internet.
 
 ---
+
+## Quick Exam Checklist – Day 13 (SAA-C03)
+
+| Topic | Key point |
+|-------|-----------|
+| **EC2** | Full OS control; lift-and-shift; long-running; not event-driven/short-lived (use Lambda). |
+| **Instance families** | General (t, m); Compute (c); Memory (r, x); Storage (i, d); Accelerated (p, g, inf). |
+| **EBS** | Block storage; ONE AZ only; attach to one instance; persistent; snapshots to S3. |
+| **Instance Store** | Ephemeral; lost on stop/move; high performance; add at launch only; cache/scratch. |
+| **EBS vs Instance Store** | Persist/stop/terminate → EBS; highest perf + regeneratable → Instance Store. |
+| **EBS HDD** | st1 (throughput); sc1 (cold); NOT boot volumes (use gp2/gp3, io1/io2). |
+| **EBS Snapshots** | Incremental; S3; create volume in same/different AZ/Region; copy for DR. |
+| **EBS Encryption** | KMS; Nitro; cannot unencrypt in place; snapshot inherits encryption. |
+| **ENI** | Same AZ; primary + secondary; MAC, private/public IP; SG; source/dest check (disable for NAT). |
+| **ENI failover** | Move ENI to standby in same AZ for same MAC/IP. |
+| **Public IP** | Dynamic (changes stop/start); Elastic IP = static; OS sees only private IP. |
+| **Instance Metadata** | 169.254.169.254; from instance only; IAM creds, user-data; use IMDSv2. |
+
+---
+
+## Important Exam Points – Day 13
+
+- **EC2** = full OS control; **Lambda** = event-driven, short-lived; **lift-and-shift** → EC2.
+- **EBS** = **one AZ only**; survives stop/terminate (if DeleteOnTermination=false); **Instance Store** = lost on stop/move.
+- **Instance Store**: Add **at launch only**; survives **reboot**; use for **cache, scratch, replicated data**.
+- **Boot volume** must be **SSD** (gp2/gp3, io1/io2); **st1/sc1 cannot be boot**.
+- **Snapshots**: Stored in **S3** (managed by EBS); **incremental**; copy to other Region for DR.
+- **ENI**: **Same AZ**; move ENI to standby for **low-cost HA** (same MAC/IP); **Elastic IP** = static public IP.
+- **Metadata**: **169.254.169.254**; **from instance only**; IAM role creds at iam/security-credentials/role-name; **IMDSv2** recommended.

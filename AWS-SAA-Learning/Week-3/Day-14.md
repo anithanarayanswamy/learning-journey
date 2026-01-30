@@ -332,3 +332,34 @@ Amazon ECS is a **container orchestration service** for running Docker container
   - **Task Definition** describes **containers, resources, and roles**.
   - **Service** ensures desired **number of tasks** are running and handles **restarts/HA**.
 
+---
+
+## Quick Exam Checklist – Day 14 (SAA-C03)
+
+| Topic | Key point |
+|-------|-----------|
+| **AMI** | Regional; copy to other regions (snapshots copied); private by default; immutable (create new to update). |
+| **On-Demand** | No commitment; per second; unpredictable/critical workloads; cannot be interrupted. |
+| **Spot** | Up to 90% discount; can be interrupted (2-min notice); batch, stateless, fault-tolerant. |
+| **Reserved** | 1 or 3 year; discount; Regional = discount only; Zonal = discount + capacity reservation. |
+| **Dedicated Host** | Physical server; BYOL; per-socket/core licensing; pay per host. |
+| **Scheduled RI** | Recurring time windows; capacity during window. |
+| **Capacity Reservation** | On-Demand = capacity guarantee, no discount; Zonal RI = discount + capacity. |
+| **Savings Plans** | $/hour commitment; Compute (EC2, Fargate, Lambda, flexible); EC2 Instance (instance family, region). |
+| **Vertical scaling** | Change instance size; requires reboot/downtime. |
+| **Horizontal scaling** | Add/remove instances; ASG; stateless + session store (e.g. ElastiCache). |
+| **Instance Metadata** | 169.254.169.254; IAM creds, user-data; IMDSv2 recommended. |
+| **ECS** | Task Definition (containers, CPU/mem, Task Role); Service (desired count, HA, LB). |
+
+---
+
+## Important Exam Points – Day 14
+
+- **AMI**: **Regional**; **immutable** (launch → update → create new AMI); copy to other region copies snapshots.
+- **On-Demand**: **Unpredictable** or **cannot be interrupted**; default option; per second.
+- **Spot**: **90% discount**; **2-minute** interruption notice; use for **batch, stateless, fault-tolerant**.
+- **Regional RI** = **discount only**; **Zonal RI** = **discount + capacity reservation**; **unused RI** still billed.
+- **Savings Plans**: Commit **$/hour**; **Compute SP** = EC2, Fargate, Lambda, any region/family; **EC2 Instance SP** = higher discount, specific family/region.
+- **Vertical scaling** = **downtime** (stop → change type → start); **horizontal** = **ASG + stateless + session store**.
+- **ECS Task Role** = IAM for containers; **Service** = desired count, restarts, LB integration.
+
