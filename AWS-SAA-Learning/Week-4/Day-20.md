@@ -264,6 +264,87 @@ Stored in **CloudWatch**:
 * Reduces cold start latency
 
 ---
+## EventBridge – Key Concepts (SAA-C03)
+
+Amazon EventBridge is a **serverless event routing service** used to react to events or schedules.
+
+---
+
+### Core Idea
+
+* **If X happens, or at Y time(s) → do Z**
+* Enables **event-driven architectures**
+* Successor to **CloudWatch Events** (EventBridge = CloudWatch Events v2)
+
+---
+
+### Event Buses
+
+* Every AWS account has a **default event bus**
+* In **CloudWatch Events**, this default bus was:
+
+  * The **only bus**
+  * **Implicitly used**
+* With EventBridge:
+
+  * You can create **additional custom event buses**
+  * Useful for:
+
+    * Application isolation
+    * Multi-account architectures
+    * SaaS integrations
+
+---
+
+### Rules
+
+* **Rules** evaluate:
+
+  * Incoming events
+  * OR schedules (cron / rate expressions)
+* Rules define:
+
+  * **WHEN** something should trigger
+  * **WHAT** should happen next
+
+---
+
+### Targets
+
+* A rule can route events to **one or more targets**
+* Common targets include:
+
+  * Lambda
+  * Step Functions
+  * SNS
+  * SQS
+  * API destinations
+
+---
+
+### Flow Summary
+
+1. Event occurs **or** schedule fires
+2. Event arrives on an **event bus**
+3. **Rules** match the event or time
+4. Event is routed to **1+ targets**
+
+---
+
+### Exam Triggers
+
+* “If something happens, trigger an action” → **EventBridge**
+* “Run something on a schedule without servers” → **EventBridge**
+* “CloudWatch Events replacement” → **EventBridge**
+* “Multiple targets from one event” → **EventBridge**
+
+---
+
+### One-Line Memory Hook
+
+**EventBridge = rules + event bus + targets (event-driven glue for AWS)**
+
+---
 
 ## Final Exam Triggers – Day 20
 
