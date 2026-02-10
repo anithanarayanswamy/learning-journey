@@ -159,23 +159,74 @@ AWS reserves **5 IPs per subnet**:
 
 ## 8. Advanced VPC Networking
 
-### VPC Endpoints (HIGH EXAM WEIGHT)
+### Egress-Only Internet Gateway (IPv6 EXAM FAVORITE)
 
-**Gateway Endpoints**
+* IPv6 addresses are **always public**
+* NAT Gateway **does NOT work for IPv6**
+* Internet Gateway allows **IN + OUT**
+* **Egress-Only IGW** allows **OUTBOUND ONLY** for IPv6
 
-* S3, DynamoDB only
-* Route-table based
-* Free
-
-**Interface Endpoints (PrivateLink)**
-
-* ENI-based
-* Uses Private IPs
-* Supports most AWS services
-
-**Exam clue**: "No internet", "private access" → VPC Endpoint
+**Exam Trigger**: "IPv6 outbound only" → Egress-Only IGW
 
 ---
+
+### VPC Endpoints (VERY HIGH EXAM WEIGHT)
+
+#### Gateway Endpoints
+
+* Supported services: **S3, DynamoDB only**
+* Added to **route tables** using **prefix lists**
+* **Highly available by default** across AZs
+* **Free**
+* Regional only (no cross-region access)
+* Endpoint policies control access
+
+**Security Pattern**
+
+* Prevent leaky S3 buckets by:
+
+  * Bucket policy allowing access **ONLY via endpoint**
+
+#### Interface Endpoints (PrivateLink)
+
+* Provide **private access to AWS public services**
+* Uses **ENIs** in specific subnets
+* **NOT HA by default** (one per AZ required)
+* Controlled via **Security Groups**
+* Supports **TCP + IPv4 only**
+* Uses **Private DNS override**
+
+**DNS Behavior**
+
+* Regional DNS
+* Zonal DNS
+* Private DNS replaces public AWS service DNS
+
+**Exam Clues**
+
+* "No internet access" → VPC Endpoint
+* "S3/DynamoDB" → Gateway Endpoint
+* "Any other AWS service" → Interface Endpoint
+
+---
+
+### VPC Peering
+
+* Direct **encrypted** connection between two VPCs
+* Same or cross-region
+* Same or cross-account
+* **NO transitive routing** (EXAM TRAP)
+* CIDRs must **NOT overlap**
+* Route tables required on both sides
+
+**Security Features**
+
+* Same-region Security Groups can reference peer SGs
+
+**Exam Triggers**
+
+* "Small number of VPCs" → Peering
+* "Hub and spoke" → Transit Gateway
 
 ## 9. DNS, Route 53 & Hybrid DNS
 
@@ -224,10 +275,52 @@ AWS reserves **5 IPs per subnet**:
 
 ---
 
-## 12. VPC Flow Logs & Monitoring
+## 12. VPC Flow Logs (HIGH EXAM IMPORTANCE)
+
+### What VPC Flow Logs Capture
+
+* Capture **metadata only** (NOT packet contents)
+* Records traffic **accepted or rejected** by Security Groups / NACLs
+* **NOT real-time** (delivery delay)
+
+### Attachment Levels
+
+* **VPC** → all ENIs in the VPC
+* **Subnet** → all ENIs in the subnet
+* **ENI** → single interface
+
+### Destinations
+
+* **CloudWatch Logs** (real-time analysis, alarms)
+* **S3** (long-term storage, Athena queries)
+
+### Log Record Fields (Know Purpose)
+
+* srcaddr / dstaddr
+* srcport / dstport
+* protocol (ICMP=1, TCP=6, UDP=17)
+* action (ACCEPT / REJECT)
+* bytes / packets
+
+### NOT Captured (COMMON TRAP)
+
+* Traffic to/from:
+
+  * 169.254.169.254 (Instance metadata)
+  * Amazon DNS
+  * DHCP
+  * Windows license activation
+
+**Exam Triggers**
+
+* "Why is traffic blocked?" → VPC Flow Logs
+
+* "Security visibility" → Flow Logs
 
 * Capture traffic metadata
+
 * Subnet / ENI / VPC level
+
 * Used for troubleshooting & security
 
 **Exam trigger**: "Why traffic is blocked?" → Flow Logs
